@@ -116,6 +116,7 @@ bool gbProcessPlayers;
 bool gbLoadGame;
 bool cineflag;
 int PauseMode;
+int BattlePauseMode;
 bool gbBard;
 bool gbBarbarian;
 bool HeadlessMode = false;
@@ -206,6 +207,13 @@ void FreeGame()
 	FreeGameMem();
 	stream_stop();
 	music_stop();
+}
+
+bool isBattlePaused()
+{
+	if (BattlePauseMode == 2) {
+		return false;
+	}
 }
 
 bool ProcessInput()
@@ -1425,20 +1433,24 @@ void GameLogic()
 		return;
 	}
 	if (gbProcessPlayers) {
-		gGameLogicStep = GameLogicStep::ProcessPlayers;
-		ProcessPlayers();
+		if (BattlePauseMode != 2) {
+			gGameLogicStep = GameLogicStep::ProcessPlayers;
+			ProcessPlayers();
+		}
 	}
 	if (leveltype != DTYPE_TOWN) {
-		gGameLogicStep = GameLogicStep::ProcessMonsters;
-		ProcessMonsters();
-		gGameLogicStep = GameLogicStep::ProcessObjects;
-		ProcessObjects();
-		gGameLogicStep = GameLogicStep::ProcessMissiles;
-		ProcessMissiles();
-		gGameLogicStep = GameLogicStep::ProcessItems;
-		ProcessItems();
-		ProcessLightList();
-		ProcessVisionList();
+		if (BattlePauseMode != 2) {
+			gGameLogicStep = GameLogicStep::ProcessMonsters;
+			ProcessMonsters();
+			gGameLogicStep = GameLogicStep::ProcessObjects;
+			ProcessObjects();
+			gGameLogicStep = GameLogicStep::ProcessMissiles;
+			ProcessMissiles();
+			gGameLogicStep = GameLogicStep::ProcessItems;
+			ProcessItems();
+			ProcessLightList();
+			ProcessVisionList();
+		}
 	} else {
 		gGameLogicStep = GameLogicStep::ProcessTowners;
 		ProcessTowners();
@@ -1447,21 +1459,25 @@ void GameLogic()
 		gGameLogicStep = GameLogicStep::ProcessMissilesTown;
 		ProcessMissiles();
 	}
-	gGameLogicStep = GameLogicStep::None;
+
+	//removethis
+	if (BattlePauseMode != 2) {
+		gGameLogicStep = GameLogicStep::None;
 
 #ifdef _DEBUG
-	if (DebugScrollViewEnabled && (SDL_GetModState() & KMOD_SHIFT) != 0) {
-		ScrollView();
-	}
+		if (DebugScrollViewEnabled && (SDL_GetModState() & KMOD_SHIFT) != 0) {
+			ScrollView();
+		}
 #endif
 
-	sound_update();
-	CheckTriggers();
-	CheckQuests();
-	RedrawViewport();
-	pfile_update(false);
+		sound_update();
+		CheckTriggers();
+		CheckQuests();
+		RedrawViewport();
+		pfile_update(false);
 
-	plrctrls_after_game_logic();
+		plrctrls_after_game_logic();
+	}
 }
 
 void TimeoutCursor(bool bTimeout)
@@ -1893,7 +1909,7 @@ void InitKeymapActions()
 	    N_("Pause Game"),
 	    N_("Pauses the game."),
 	    'P',
-	    diablo_pause_game);
+	    diablo_battle_pause_game);
 	sgOptions.Keymapper.AddAction(
 	    "Pause Game (Alternate)",
 	    N_("Pause Game (Alternate)"),
@@ -2689,6 +2705,15 @@ void diablo_pause_game()
 		}
 
 		RedrawEverything();
+	}
+}
+
+void diablo_battle_pause_game()
+{
+	if (BattlePauseMode != 0) {
+		BattlePauseMode = 0;
+	} else {
+		BattlePauseMode = 2;
 	}
 }
 
