@@ -1460,7 +1460,6 @@ void GameLogic()
 		ProcessMissiles();
 	}
 
-	//removethis
 	if (BattlePauseMode != 2) {
 		gGameLogicStep = GameLogicStep::None;
 
@@ -2710,10 +2709,12 @@ void diablo_pause_game()
 
 void diablo_battle_pause_game()
 {
-	if (BattlePauseMode != 0) {
-		BattlePauseMode = 0;
-	} else {
-		BattlePauseMode = 2;
+	if (!gbIsMultiplayer) {
+		if (BattlePauseMode != 0) {
+			BattlePauseMode = 0;
+		} else {
+			BattlePauseMode = 2;
+		}
 	}
 }
 
