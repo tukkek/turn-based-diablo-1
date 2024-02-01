@@ -81,6 +81,18 @@ void SendPlrMsg(Player &player, std::string_view text)
 	message.text = from + std::string(text);
 	message.prefixLength = from.size();
 	message.lineHeight = GetLineHeight(message.text, GameFont12) + 3;
+
+	// Check for specific messages and update BattlePauseMode accordingly
+	if (text == "I need help! Come here!") {
+		message.text = from + std::string("Pause, do commands");
+		BattlePauseMode = 2;
+	} else if (text == "Follow me.") {
+		message.text = from + std::string("Play");
+		BattlePauseMode = 0;
+	} else {
+		message.text = from + std::string(text);
+	}
+
 	AddMessageToChatLog(text, &player);
 }
 

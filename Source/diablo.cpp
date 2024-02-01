@@ -1460,7 +1460,6 @@ void GameLogic()
 		ProcessMissiles();
 	}
 
-	//removethis
 	if (BattlePauseMode != 2) {
 		gGameLogicStep = GameLogicStep::None;
 
