@@ -1433,7 +1433,9 @@ void GameLogic()
 		return;
 	}
 	if (gbProcessPlayers) {
-		if (BattlePauseMode != 2) {
+		//In multiplayer, allow people in town to not be affected by pauses from fighting in dungeon
+		//In single player allow pause even in town
+		if (BattlePauseMode != 2 || (leveltype == DTYPE_TOWN && gbIsMultiplayer)) {
 			gGameLogicStep = GameLogicStep::ProcessPlayers;
 			ProcessPlayers();
 		}
