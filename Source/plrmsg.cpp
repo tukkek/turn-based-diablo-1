@@ -113,6 +113,9 @@ void SendPlrMsg(Player &player, std::string_view text)
 			// if pause signal, pause game
 			if (BattlePauseMode != 2) {
 				message.text = from + std::string("Pause, do commands");
+				if (leveltype == DTYPE_TOWN) {
+					message.text += " - No effect in town. Unpause to enter dungeon.";
+				}
 				BattlePauseMode = 2;
 			}
 		} else if (text == unpauseText) {
