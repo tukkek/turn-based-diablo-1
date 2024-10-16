@@ -1419,11 +1419,27 @@ void UpdateMonsterLights()
 	}
 }
 
+bool autounpause(){
+	return MyPlayer->_pmode!=PM_STAND||MyPlayer->destAction!=ACTION_NONE
+					||LastMouseButtonAction!=MouseActionType::None;
+}
+
+bool autopause(){
+	if(BattlePauseMode==2||autounpause()) return false;
+	for(size_t i=0;i<ActiveMonsterCount;i++){
+		Monster &monster=Monsters[ActiveMonsters[i]];
+		if(!IsTileVisible(monster.position.tile)) continue;
+		if(monster.hitPoints>>6<=0) continue;
+		return true;
+	}
+	return false;
+}
+
 void GameLogic()
 {
-	if (!ProcessInput()) {
-		return;
-	}
+	if(autopause()) BattlePauseMode=2;
+	if(!ProcessInput()) return;
+	if(autounpause()) BattlePauseMode=0;
 	if(gbProcessPlayers&&BattlePauseMode!=2){
 		gGameLogicStep = GameLogicStep::ProcessPlayers;
 		ProcessPlayers();
