@@ -7,7 +7,7 @@
 
 #include <cstdint>
 #include <vector>
-#include <set>
+
 #include <algorithm>
 #include <array>
 
@@ -908,8 +908,6 @@ public:
 extern DVL_API_FOR_TEST uint8_t MyPlayerId;
 extern DVL_API_FOR_TEST Player *MyPlayer;
 extern DVL_API_FOR_TEST std::vector<Player> Players;
-// Make UniquePlayerNames accessible from other files, it contains names of players who pressed 'ready' button
-extern DVL_API_FOR_TEST std::set<std::string> UniquePlayerNames;
 /** @brief What Player items and stats should be displayed? Normally this is identical to MyPlayer but can differ when /inspect was used. */
 extern Player *InspectPlayer;
 /** @brief Do we currently inspect a remote player (/inspect was used)? In this case the (remote) players items and stats can't be modified. */

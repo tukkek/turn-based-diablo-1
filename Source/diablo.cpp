@@ -118,8 +118,8 @@ bool ReturnToMainMenu;
 bool gbProcessPlayers;
 bool gbLoadGame;
 bool cineflag;
-int PauseMode;
-int BattlePauseMode;
+int PauseMode;//replaced by BattlePauseMode
+int BattlePauseMode;//replaces PauseMode
 bool gbBard;
 bool gbBarbarian;
 bool HeadlessMode = false;
@@ -210,13 +210,6 @@ void FreeGame()
 	FreeGameMem();
 	stream_stop();
 	music_stop();
-}
-
-bool isBattlePaused()
-{
-	if (BattlePauseMode == 2) {
-		return false;
-	}
 }
 
 bool ProcessInput()
@@ -1431,13 +1424,9 @@ void GameLogic()
 	if (!ProcessInput()) {
 		return;
 	}
-	if (gbProcessPlayers) {
-		//In multiplayer, allow people in town to not be affected by pauses from fighting in dungeon
-		//In single player allow pause even in town
-		if (BattlePauseMode != 2 || (leveltype == DTYPE_TOWN && gbIsMultiplayer)) {
-			gGameLogicStep = GameLogicStep::ProcessPlayers;
-			ProcessPlayers();
-		}
+	if(gbProcessPlayers&&BattlePauseMode!=2){
+		gGameLogicStep = GameLogicStep::ProcessPlayers;
+		ProcessPlayers();
 	}
 	if (leveltype != DTYPE_TOWN) {
 		if (BattlePauseMode != 2) {
@@ -1915,7 +1904,7 @@ void InitKeymapActions()
 	    N_("Pause Game (Alternate)"),
 	    N_("Pauses the game."),
 	    SDLK_PAUSE,
-	    diablo_pause_game);
+	    diablo_battle_pause_game);
 	sgOptions.Keymapper.AddAction(
 	    "DecreaseGamma",
 	    N_("Decrease Gamma"),
@@ -2400,7 +2389,7 @@ void InitPadmapActions()
 	    N_("Pause Game"),
 	    N_("Pauses the game."),
 	    ControllerButton_NONE,
-	    diablo_pause_game);
+	    diablo_battle_pause_game);
 	sgOptions.Padmapper.AddAction(
 	    "DecreaseGamma",
 	    N_("Decrease Gamma"),
@@ -2709,6 +2698,7 @@ bool TryIconCurs()
 	return false;
 }
 
+//replaced by diablo_battle_pause_game()
 void diablo_pause_game()
 {
 	if (!gbIsMultiplayer) {
@@ -2725,16 +2715,8 @@ void diablo_pause_game()
 	}
 }
 
-void diablo_battle_pause_game()
-{
-	if (!gbIsMultiplayer) {
-		if (BattlePauseMode != 0) {
-			BattlePauseMode = 0;
-		} else {
-			BattlePauseMode = 2;
-		}
-	}
-}
+//replaces diablo_pause_game()
+void diablo_battle_pause_game(){BattlePauseMode=BattlePauseMode==0?2:0;}
 
 bool GameWasAlreadyPaused = false;
 bool MinimizePaused = false;

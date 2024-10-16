@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
-#include <set>
+
 #include <fmt/core.h>
 
 #include "control.h"
@@ -53,7 +53,6 @@ namespace devilution {
 uint8_t MyPlayerId;
 Player *MyPlayer;
 std::vector<Player> Players;
-std::set<std::string> UniquePlayerNames;//used to count number of players who are ready with their move
 Player *InspectPlayer;
 bool MyPlayerIsDead;
 
