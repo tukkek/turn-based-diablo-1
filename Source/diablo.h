@@ -70,6 +70,7 @@ extern bool cineflag;
 /* These are defined in fonts.h */
 extern void FontsCleanup();
 extern DVL_API_FOR_TEST int PauseMode;
+extern DVL_API_FOR_TEST int BattlePauseMode;
 extern bool gbBard;
 extern bool gbBarbarian;
 /**
@@ -90,6 +91,7 @@ bool StartGame(bool bNewGame, bool bSinglePlayer);
 int DiabloMain(int argc, char **argv);
 bool TryIconCurs();
 void diablo_pause_game();
+void diablo_battle_pause_game();
 bool diablo_is_focused();
 void diablo_focus_pause();
 void diablo_focus_unpause();
